@@ -41,6 +41,8 @@ python setup.py install
 ```
 
 ## 依赖
+### Library
+目前全部采用的是python内置包，可直接安装使用。
 ### Email & API Key   
 | `Email` |用户登陆 `FOFA Pro` 使用的 `Email`|
 |---------|:-----------------:|
