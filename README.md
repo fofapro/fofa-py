@@ -32,6 +32,13 @@ Ubuntu 16.04 LTS x64 +  Python 2.7.12
 ```
 pip install fofa
 ```
+or
+
+```
+git clone https://github.com/fofapro/fofa-py.git
+cd fofa-py   
+python setup.py install
+```
 
 ## 依赖
 ### Email & API Key   
@@ -52,6 +59,7 @@ if __name__ == "__main__":
     for ip,city in data["results"]:
         print "%s,%s"%(ip,city)
 ```
+####具体使用文档见<a href="https://github.com/fofapro/fofa-py/wiki"><font face="menlo">wiki</font></a>
 
 ## 协议
 `FOFA SDK` 遵循 `MIT` 协议 <a href="https://opensource.org/licenses/mit"><font face="menlo">https://opensource.org/licenses/mit</font></a>
