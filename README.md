@@ -53,11 +53,11 @@ python setup.py install
 import fofa
 
 if __name__ == "__main__":
-    email, key = ('test@test.com','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-    client = fofa.Client(email, key)
-    data = client.get_data('''host="fofa.so"''',fields="ip,city")
+    email, key = ('test@test.com','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') //输入email和key
+    client = fofa.Client(email, key) //将email和key传入fofa.Client类进行初始化，并得到一个fofa client对象
+    data = client.get_data('''host="fofa.so"''',fields="ip,city") //用fofa client对象进行数据获取，参数详细说明见参考wiki
     for ip,city in data["results"]:
-        print "%s,%s"%(ip,city)
+        print "%s,%s"%(ip,city) //打印每条数据的ip和city
 ```
 ####具体使用文档见<a href="https://github.com/fofapro/fofa-py/wiki"><font face="menlo">wiki</font></a>
 
