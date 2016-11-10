@@ -54,4 +54,4 @@ if __name__ == "__main__":
 ```
 
 ## 协议
-`FOFA SDK` 遵循 `BSD` 协议 <a href="https://opensource.org/licenses/BSD-3-Clause">https://opensource.org/licenses/BSD-3-Clause</a>
+`FOFA SDK` 遵循 `MIT` 协议 <a href="https://opensource.org/licenses/mit"><font face="menlo">https://opensource.org/licenses/mit</font></a>
