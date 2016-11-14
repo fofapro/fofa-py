@@ -9,6 +9,20 @@ class ClientTestCase(unittest.TestCase):
         email,key = config.split("\n")
         self.client = fofa.Client(email, key)
 
+    def test_get_userinfo(self):
+        userinfo = self.client.get_userinfo()
+        self.assertIn("isvip",userinfo)
+        self.assertIn("fcoin", userinfo)
+        self.assertIn("email", userinfo)
+        self.assertIn("avatar", userinfo)
+
+        self.assertTrue(userinfo["isvip"])
+        self.assertTrue(userinfo["fcoin"])
+        self.assertTrue(userinfo["email"])
+        self.assertTrue(userinfo["avatar"])
+
+
+
     def test_get_data_empty(self):
         query = '''djaoiwjklejaoijdoawd'''
         data = self.client.get_data(query)
