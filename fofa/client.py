@@ -20,13 +20,13 @@ class Client:
         res = self.__http_get(api_full_url,param)
         return json.loads(res)
 
-    def get_data(self,query_str,page=1,fields=""):
-        res = self.get_json_data(query_str,page,fields)
+    def get_data(self,query_str,page=1,fields="",size=100):
+        res = self.get_json_data(query_str,page,fields,size)
         return json.loads(res)
 
-    def get_json_data(self,query_str,page=1,fields=""):
+    def get_json_data(self,query_str,page=1,fields="",size=100):
         api_full_url = "%s%s" % (self.base_url,self.search_api_url)
-        param = {"qbase64":base64.b64encode(query_str),"email":self.email,"key":self.key,"page":page,"fields":fields}
+        param = {"qbase64":base64.b64encode(query_str),"email":self.email,"key":self.key,"size":size,"page":page,"fields":fields}
         res = self.__http_get(api_full_url,param)
         return res
 
