@@ -10,14 +10,14 @@
 ## 环境
 ### 开发环境
 ``` 
-windows7 + Python 2.7.10 + pycharm 2016.2.3
+Mac Os + Python 3.8.3 + Vscode
 ```
 ### 测试环境
 ``` 
-Ubuntu 16.04 LTS x64 +  Python 2.7.12
+Mac Os + Python 3.8.3 + Python 2.7.16
 ```
 ### 使用环境
-`Python 2.x`   
+`Python 3.x` `Python 2.x`  
 
 ## 获取
 ### `pip`
