@@ -1,6 +1,6 @@
 # FOFA Pro SDK 使用说明文档
 ## FOFA Pro API   
-<a href="https://fofa.so/api"><font face="menlo">`FOFA Pro API`</font></a> 是资产搜索引擎 <a href="https://fofa.so/">`FOFA Pro`</a> 为开发者提供的 `RESTful API` 接口, 允许开发者在自己的项目中集成 `FOFA Pro` 的功能。    
+<a href="https://fofa.info/api"><font face="menlo">`FOFA Pro API`</font></a> 是资产搜索引擎 <a href="https://fofa.info/">`FOFA Pro`</a> 为开发者提供的 `RESTful API` 接口, 允许开发者在自己的项目中集成 `FOFA Pro` 的功能。    
 
 
 ## FOFA SDK
@@ -46,7 +46,7 @@ python setup.py install
 ### Email & API Key   
 | `Email` |用户登陆 `FOFA Pro` 使用的 `Email`|
 |---------|:-----------------:|
-|`Key`| 前往 <a href="https://fofa.so/my/users/info" style="color:#0000ff"><strong>`个人中心`</strong></a> 查看 `API Key` 
+|`Key`| 前往 <a href="https://fofa.info/my/users/info" style="color:#0000ff"><strong>`个人中心`</strong></a> 查看 `API Key` 
 
 
 ## Example   

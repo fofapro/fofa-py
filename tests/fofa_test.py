@@ -17,7 +17,8 @@ class ClientTestCase(unittest.TestCase):
         self.assertIn("avatar", userinfo)
 
         self.assertTrue(userinfo["isvip"])
-        self.assertTrue(userinfo["fcoin"])
+        # self.assertTrue(userinfo["fcoin"])
+        self.assertGreaterEqual(userinfo["fcoin"], 0)
         self.assertTrue(userinfo["email"])
         self.assertTrue(userinfo["avatar"])
 
@@ -38,12 +39,12 @@ class ClientTestCase(unittest.TestCase):
         self.assertTrue(data["mode"])
         self.assertTrue(data["query"])
 
-        self.assertEqual(data["query"], query)
+        self.assertEqual(data["query"].encode('ascii', 'ignore').strip("\""), query)
         self.assertEqual(data["page"], 1)
         self.assertEqual(data["mode"], "normal")
 
     def test_get_data_normal(self):
-        query = '''fofa.so'''
+        query = '''fofa.info'''
         data =  self.client.get_data(query )
         self.assertIn("results",data)
         self.assertIn("page", data)
@@ -59,12 +60,12 @@ class ClientTestCase(unittest.TestCase):
 
         self.assertFalse(data["error"])
 
-        self.assertEqual(data["query"],query)
+        self.assertEqual(data["query"].encode('ascii', 'ignore').strip("\""),query)
         self.assertEqual(data["page"], 1)
         self.assertEqual(data["mode"], "normal")
 
     def test_get_data_field(self):
-        query = '''host="fofa.so"'''
+        query = '''host="fofa.info"'''
         data = self.client.get_data(query,fields="host,title,ip,domain,port,country,city")
 
         self.assertIn("results", data)
@@ -88,7 +89,7 @@ class ClientTestCase(unittest.TestCase):
         self.assertEqual(len(data["results"][0]),7)
 
     def test_get_data_extended(self):
-        query = '''host="fofa.so"'''
+        query = '''host="fofa.info"'''
         data = self.client.get_data(query)
         self.assertIn("results", data)
         self.assertIn("page", data)
@@ -111,15 +112,15 @@ class ClientTestCase(unittest.TestCase):
     def test_get_data_page_error1(self):
         try:
             query = '''djaoiwjklejaoijdoawd'''
-            data = self.client.get_json_data(query, page="asd")
+            data = self.client.get_json_data(query, size=100, page="asd")
         except:
             self.assertTrue(True)
 
 
     def test_get_data_page_error2(self):
         try:
-            query = '''fofa.so'''
-            data = self.client.get_json_data(query, page="300")
+            query = '''fofa.info'''
+            data = self.client.get_json_data(query, size=100, page="300")
         except:
             self.assertTrue(True)
 
