@@ -96,6 +96,20 @@ class ClientTestCase(unittest.TestCase):
 
         self.assertEqual(len(data["results"][0]), 7)
 
+    def test_search_host(self):
+        query = '''78.48.50.249'''
+        data = self.client.search_host(query)
+        self.assertIn("host", data)
+        self.assertIn("ip", data)
+        self.assertIn("asn", data)
+
+    def test_search_stat(self):
+        query = '''domain="baidu.com"'''
+        data = self.client.search_stats(query, size=10, fields="title")
+        self.assertIn("distinct", data)
+        self.assertIn("aggs", data)
+
+
     def test_get_data_extended(self):
         query = '''host="fofa.info"'''
         data = self.client.search(query)

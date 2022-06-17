@@ -127,8 +127,8 @@ class Client:
         :return: query result in json format
            {
                 "error": false,
-                "host": "78.48.50.249",
-                "ip": "78.48.50.249",
+                "host": "78.**.50.***",
+                "ip": "78.**.50.***",
                 "asn": 6805,
                 "org": "Telefonica Germany",
                 "country_name": "Germany",
