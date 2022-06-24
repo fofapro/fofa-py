@@ -3,9 +3,9 @@
 # Author: Erdog, Loveforkeeps, Alluka
 import base64
 import json
-import requests
 import os
 import sys
+import requests
 
 
 class Client:

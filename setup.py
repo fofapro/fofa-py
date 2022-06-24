@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name = 'FOFA',
-    version = '1.0.0',
+    version = '1.1.0',
     description = 'Python library for FOFA (https://fofa.info)',
     author = 'gcr',
     author_email = 'yzjjaheim@163.com',
