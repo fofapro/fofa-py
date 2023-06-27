@@ -24,10 +24,10 @@ fofa
 ### 设置fofa api key
   通过环境变量设置认证信息
 
-| 环境变量Key | Value |
-| `FOFA_EMAIL` |用户登陆 `FOFA` 使用的 `Email`|
-|---------|:-----------------:|
-|`FOFA_KEY`| 前往 [个人中心](https://fofa.info/userInfo) 查看 `API Key`
+| 环境变量Key  | Value                                                      |
+|--------------|:----------------------------------------------------------:|
+| `FOFA_EMAIL` | 用户登陆 `FOFA` 使用的 `Email`                             |
+| `FOFA_KEY`   | 前往 [个人中心](https://fofa.info/userInfo) 查看 `API Key` |
 
 
 ### count
