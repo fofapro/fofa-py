@@ -1,14 +1,10 @@
-# FOFA Pro SDK 使用说明文档
-## FOFA Pro API   
-<a href="https://fofa.info/api"><font face="menlo">`FOFA Pro API`</font></a> 是资产搜索引擎 <a href="https://fofa.info/">`FOFA Pro`</a> 为开发者提供的 `RESTful API` 接口, 允许开发者在自己的项目中集成 `FOFA Pro` 的功能。    
+# FOFA SDK 使用说明文档
 
+## 简介
+  基于 [`FOFA API`](https://fofa.info/api) 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA ` 集成到自己的项目中。
 
-## 功能
-  - Fofa API
-  - 命令行接口
-
-## FOFA SDK
-基于 [`FOFA API`](https://fofa.info/api) 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA ` 集成到自己的项目中。
+## FOFA 命令行工具
+  基于FOFA python SDK的简单命令行工具，用于简单的查询FOFA数据
 
 ## 安装
 ```shell
