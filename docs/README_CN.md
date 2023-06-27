@@ -4,11 +4,11 @@
 
 
 ## 功能
-  - Fofa搜索
+  - Fofa API
   - 命令行接口
 
 ## FOFA SDK
-基于 `FOFA Pro API` 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA Pro` 集成到自己的项目中。
+基于 [`FOFA API`](https://fofa.info/api) 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA ` 集成到自己的项目中。
 
 ## 安装
 ```shell
@@ -22,11 +22,13 @@ pip install fofa
 fofa
 ```
 ### 设置fofa api key
-| `Email` |用户登陆 `FOFA` 使用的 `Email`|
-|---------|:-----------------:|
-|`Key`| 前往 <a href="https://fofa.info/userInfo" style="color:#0000ff"><strong>`个人中心`</strong></a> 查看 `API Key`
+  通过环境变量设置认证信息
 
-  设置环境变量FOFA_EMAIL和FOFA_KEY
+| 环境变量Key | Value |
+| `FOFA_EMAIL` |用户登陆 `FOFA` 使用的 `Email`|
+|---------|:-----------------:|
+|`FOFA_KEY`| 前往 [个人中心](https://fofa.info/userInfo) 查看 `API Key`
+
 
 ### count
 统计查询的数量， 示例
@@ -107,9 +109,9 @@ if __name__ == "__main__":
     client = fofa.Client(email, key)                # 将email和key传入fofa.Client类进行初始化和验证，并得到一个fofa client对象
     query_str = 'header="thinkphp" || header="think_template"'
     for page in range(1, 51):                       # 从第1页查到第50页
-        fcoin = client.get_userinfo()["fofa_point"]      # 查询F点剩余数量
-        if fcoin <= 249:
-            break                                   # 当F币剩249个时，不再获取数据
+        fpoint = client.get_userinfo()["fofa_point"]      # 查询F点剩余数量
+        if fpoint < 100:
+            break                                   # 当F点小于100时，不再获取数据
         data = client.search(query_str, size=100, page=page, fields="ip,city")  # 查询第page页数据的ip和城市
         for ip, city in data["results"]:
             print "%s,%s" % (ip, city)              # 打印出每条数据的ip和城市
