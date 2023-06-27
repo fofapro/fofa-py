@@ -1,0 +1,8 @@
+click
+click-plugins
+colorama
+requests>=2.2.1
+XlsxWriter
+six
+ipaddress;python_version<='2.7'
+retry

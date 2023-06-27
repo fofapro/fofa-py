@@ -2,14 +2,23 @@
 
 from setuptools import setup
 
+DEPENDENCIES = open('requirements.txt', 'r').read().split('\n')
+README = open('./docs/README_CN.md', 'r').read()
+
+
 setup(
     name = 'FOFA',
-    version = '1.0.0',
+    version = '2.0.1',
     description = 'Python library for FOFA (https://fofa.info)',
-    author = 'gcr',
-    author_email = 'yzjjaheim@163.com',
-    url = 'https://github.com/fofa-dev/FofaSDK-python',
-    packages = ['fofa', 'fofa.poc', 'fofa.src'],
+    long_description=README,
+    long_description_content_type="text/markdown",
+    author = 'Fofa',
+    author_email = 'fofabot@baimaohui.net',
+    url = 'https://github.com/fofapro/fofa-py',
+    packages = ['fofa'],
+    entry_points={'console_scripts': ['fofa=fofa.__main__:main']},
+    install_requires=DEPENDENCIES,
+    keywords=['fofa', 'security', 'network'],
     classifiers = [
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',

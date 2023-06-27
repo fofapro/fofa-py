@@ -44,27 +44,10 @@ if __name__ == "__main__":
     python setup.py install
     ```
 
-## Denpendency
-### Library
-```shell
-pip install requests
-```
-
 ### Email & API Key   
 | `Email` |`Email` Used for `FOFA Pro` Login|
 |---------|:-----------------:|
 |`Key`| `API Key` in <a href="https://fofa.info/userInfo" style="color:#0000ff"><strong>`个人中心`(userinfo)</strong></a> 
-
-## Enviroment
-### Develop Enviroment
-``` 
-Python 2.7.16 + Pycharm 2021.2.2
-ProductName:    macOS
-ProductVersion: 12.3
-BuildVersion:   21E230
-```
-### Python version
-Supports both`Python 2.x` && `Python 3.x`
 
 ## License
 This software is licensed under <a href="https://opensource.org/licenses/mit"><font face="menlo">MIT License</a>

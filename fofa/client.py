@@ -7,17 +7,47 @@ import requests
 import os
 import sys
 
+from retry.api import retry_call
+
+if __name__ == '__main__':
+    # 当作为脚本直接执行时的处理方式
+    from exception import FofaError
+else:
+    # 当作为包/模块导入时的处理方式
+    from .exception import FofaError
+
+
+if sys.version_info[0] > 2:
+    # Python 3
+    def encode_query(query_str):
+        encoded_query = query_str.encode()
+        encoded_query = base64.b64encode(encoded_query)
+        return encoded_query.decode()
+else:
+    # Python 2
+    def encode_query(query_str):
+        encoded_query = base64.b64encode(query_str)
+        return encoded_query
 
 class Client:
-    def __init__(self, email, key):
+    def __init__(self, email='', key='', base_url='https://fofa.info', proxies=None):
+        """ 初始化Client
+
+        :param email: The Fofa Email.
+        :type email: str
+        :param key: The Fofa api key.
+        :type key: str
+        :param proxies:  A proxies array for the requests library, e.g. {'https': 'your proxy'}
+        :type proxies: dict
+
+        """
         self.email = email
         self.key = key
-        self.base_url = "https://fofa.info"
-        self.__search_api_url = "/api/v1/search/all"
-        self.__login_api_url = "/api/v1/info/my"
-        self.__stats_api_url = "/api/v1/search/stats"
-        self.__host_api_url = "/api/v1/host/%s"
-        self.get_userinfo()  # check email and key
+        self.base_url = base_url.rstrip('/')
+        self._session = requests.Session()
+        if proxies:
+            self._session.proxies.update(proxies)
+            self._session.trust_env = False
 
     def get_userinfo(self):
         """
@@ -37,12 +67,9 @@ class Client:
                 "email": "username@sample.net"
             }
         """
-        api_full_url = "%s%s" % (self.base_url, self.__login_api_url)
-        param = {"email": self.email, "key": self.key}
-        res = self.__http_get(api_full_url, param)
-        return json.loads(res)
+        return self.__do_req( "/api/v1/info/my")
 
-    def search(self, query_str, page=1, size=100, fields=""):
+    def search(self, query_str, page=1, size=100, fields="", opts={}):
         """
         :param query_str: search string
             example: 'ip=127.0.0.1'
@@ -72,11 +99,14 @@ class Client:
                 "size": 2
             }
         """
-        uri = self.__search_api_url
-        res = self.__get_json_data(uri, query_str, page, size, fields)
-        return json.loads(res)
+        param = opts
+        param['qbase64'] = encode_query(query_str)
+        param['page'] = page
+        param['fields'] = fields
+        param['size'] = size
+        return self.__do_req('/api/v1/search/all', param)
 
-    def search_stats(self, query_str, page=1, size=100, fields=""):
+    def search_stats(self, query_str, page=1, size=100, fields="", opts={}):
         """
         :param query_str: search string
             example: 'ip=127.0.0.1'
@@ -116,11 +146,14 @@ class Client:
                 "error": false
             }
         """
-        uri = self.__stats_api_url
-        res = self.__get_json_data(uri, query_str, page, size, fields)
-        return json.loads(res)
+        param = opts
+        param['qbase64'] = encode_query(query_str)
+        param['page'] = page
+        param['fields'] = fields
+        param['size'] = size
+        return self.__do_req('/api/v1/search/stats', param)
 
-    def search_host(self, host, detail=False):
+    def search_host(self, host, detail=False, opts={}):
         """
         :param host: required ip
         :param detail: show detail info
@@ -150,30 +183,39 @@ class Client:
                 "update_time": "2022-06-11 08:00:00"
             }
         """
-        uri = self.__host_api_url % host
-        api_full_url = "%s%s" % (self.base_url, uri)
-        param = {"email": self.email, "key": self.key, "detail": detail}
-        res = self.__http_get(api_full_url, param)
-        return json.loads(res)
+        param = opts
+        param['detail'] = detail
 
-    def __get_json_data(self, uri, query_str, page=1, size=100, fields=""):
-        api_full_url = "%s%s" % (self.base_url, uri)
-        if sys.version > '3':
-            query_str = query_str.encode()
-        query_str = base64.b64encode(query_str)
-        param = {"qbase64": query_str, "email": self.email, "key": self.key, "page": page, "fields": fields,
-                 "size": size}
-        res = self.__http_get(api_full_url, param)
-        return res
+        u = '/api/v1/host/%s' % host
+        return self.__do_req(u, param)
 
-    def __http_get(self, url, param):
-        try:
-            resp = requests.get(url=url, params=param)
-            res = resp.text
-        except Exception as e:
-            print(e)
-            raise
-        return res
+    def __do_req(self, path, params=None, method='get'):
+        u = self.base_url + path
+        data = None
+        req_param = {}
+        if params == None:
+            req_param = {
+                "email": self.email,
+                "key": self.key,
+            }
+        else:
+            req_param = params
+            req_param['email'] = self.email
+            req_param['key'] = self.key
+
+        if method == 'post':
+            data = params
+            params = None
+        res = retry_call(self._session.request, fkwargs = {
+            "url": u,
+            "method": method,
+            "data": data,
+            "params": req_param,
+        }, tries = 5, delay = 1, max_delay = 60, backoff=2)
+        data = res.json()
+        if 'error' in data and data['error']:
+            raise FofaError(data['errmsg'])
+        return data
 
 
 if __name__ == "__main__":

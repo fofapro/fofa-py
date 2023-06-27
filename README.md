@@ -24,4 +24,4 @@ if __name__ == "__main__":
 ## License
 This software is licensed under <a href="https://opensource.org/licenses/mit"><font face="menlo">MIT License</a>
 
-Copyright (C) 2022 Fofa, Inc.
+Copyright (C) 2023 Fofa, Inc.
