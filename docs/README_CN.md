@@ -1,10 +1,10 @@
-# FOFA SDK 使用说明文档
+# FOFA SDK 使用说明
 
 ## 简介
-  基于 [`FOFA API`](https://fofa.info/api) 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA ` 集成到自己的项目中。
+  基于 [`FOFA API`](https://fofa.info/api) 编写的 `python` 版 `SDK`, 方便 `python` 开发者快速将 `FOFA` 集成到自己的项目中。
 
 ## FOFA 命令行工具
-  基于FOFA python SDK的简单命令行工具，用于简单的查询FOFA数据
+  基于FOFA python SDK实现的简单命令行工具，用于简单的FOFA数据查询
 
 ## 安装
 ```shell
