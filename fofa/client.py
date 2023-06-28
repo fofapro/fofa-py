@@ -3,6 +3,7 @@
 # Author: Erdog, Loveforkeeps, Alluka
 import base64
 import json
+import logging
 import requests
 import os
 import sys
@@ -12,42 +13,49 @@ from retry.api import retry_call
 if __name__ == '__main__':
     # 当作为脚本直接执行时的处理方式
     from exception import FofaError
+    from helper import get_language, encode_query
 else:
     # 当作为包/模块导入时的处理方式
     from .exception import FofaError
-
-
-if sys.version_info[0] > 2:
-    # Python 3
-    def encode_query(query_str):
-        encoded_query = query_str.encode()
-        encoded_query = base64.b64encode(encoded_query)
-        return encoded_query.decode()
-else:
-    # Python 2
-    def encode_query(query_str):
-        encoded_query = base64.b64encode(query_str)
-        return encoded_query
+    from .helper import get_language, encode_query
 
 class Client:
     def __init__(self, email='', key='', base_url='https://fofa.info', proxies=None):
-        """ 初始化Client
+        """ create new fofa client
 
-        :param email: The Fofa Email.
+        :param email: The Fofa Email. If not specified, it will be read from the FOFA_EMAIL environment variable.
         :type email: str
-        :param key: The Fofa api key.
+        :param key: The Fofa api key. If not specified, it will be read from the FOFA_KEY environment variable.
         :type key: str
+        :param base_url: The base URL of the FOFA API. Defaults to 'https://fofa.info'.
+        :type base_url: str
         :param proxies:  A proxies array for the requests library, e.g. {'https': 'your proxy'}
         :type proxies: dict
-
         """
+        if email == '':
+            email = os.environ.get('FOFA_EMAIL', '')
+            key = os.environ.get('FOFA_KEY', '')
+
         self.email = email
         self.key = key
+
         self.base_url = base_url.rstrip('/')
+
+        self.lang = 'en'
+        sys_lang = get_language()
+        if sys_lang != None and sys_lang.startswith('zh'):
+            self.lang = 'zh-CN'
+
         self._session = requests.Session()
         if proxies:
             self._session.proxies.update(proxies)
             self._session.trust_env = False
+
+        # retry config, in seconds
+        self.tries = 5       # Number of retry attempts
+        self.delay = 1       # Initial delay between retries
+        self.max_delay = 60  # Maximum delay between retries
+        self.backoff = 2     # Backoff factor for exponential backoff
 
     def get_userinfo(self):
         """
@@ -104,17 +112,73 @@ class Client:
         param['page'] = page
         param['fields'] = fields
         param['size'] = size
+        logging.info("search '%s' page:%d size:%d", query_str, page, size)
         return self.__do_req('/api/v1/search/all', param)
 
-    def search_stats(self, query_str, page=1, size=100, fields="", opts={}):
+    def search_next(self, query_str, fields='', size=100, next='', full=False, opts={}):
         """
+        Query the next page of search results.
+
         :param query_str: search string
             example: 'ip=127.0.0.1'
             example: 'header="thinkphp" || header="think_template"'
-        :param page: starting page number
-        :param size: number of result fit in one page
-        :param fields: query field
-            example: 'ip,city'
+
+        :param fields: The fields to be included in the response.
+            Default: 'host,ip,port'
+        :type fields: str
+
+        :param size: The number of results to be returned per page.
+            Default: 100
+            Maximum: 10,000
+        :type size: int
+
+        :param next: The ID for pagination.
+            The next value is returned in the response of previous search query.
+            If not provided, the first page of results will be returned.
+        :type next: str
+
+        :param full: Specify if all data should be searched.
+            Default: False (search within the past year)
+            Set to True to search all data.
+        :type full: bool
+
+        :param opts: Additional options for the search.
+        :type opts: dict
+
+        :return: The query result in JSON format.
+        :rtype: dict
+        """
+        param = opts
+        param['qbase64'] = encode_query(query_str)
+        param['fields'] = fields
+        param['size'] = size
+        param['full'] = full
+        if next and next != '':
+            param['next'] = next
+
+        logging.info("search next for '%s' size:%d, next:%s", query_str, size, next)
+        return self.__do_req('/api/v1/search/next', param)
+
+    def search_stats(self, query_str, size=5, fields='', opts={}):
+        """
+        Query the statistics of the search results.
+
+        :param query_str: The search query string.
+            Example: 'ip=127.0.0.1'
+            Example: 'header="thinkphp" || header="think_template"'
+        :type query_str: str
+
+        :param size: The number of results to be aggregated for each item.
+            Default: 5
+        :type size: int
+
+        :param fields: The fields to be included in the aggregation.
+            Example: 'ip,city'
+        :type fields: str
+
+        :param opts: Additional options for the search.
+        :type opts: dict
+
         :return: query result in json format
             {
                 "distinct": {
@@ -148,7 +212,6 @@ class Client:
         """
         param = opts
         param['qbase64'] = encode_query(query_str)
-        param['page'] = page
         param['fields'] = fields
         param['size'] = size
         return self.__do_req('/api/v1/search/stats', param)
@@ -197,11 +260,13 @@ class Client:
             req_param = {
                 "email": self.email,
                 "key": self.key,
+                "lang": self.lang,
             }
         else:
             req_param = params
             req_param['email'] = self.email
             req_param['key'] = self.key
+            req_param['lang'] = self.lang
 
         if method == 'post':
             data = params
@@ -211,7 +276,7 @@ class Client:
             "method": method,
             "data": data,
             "params": req_param,
-        }, tries = 5, delay = 1, max_delay = 60, backoff=2)
+        }, tries = self.tries, delay = self.delay, max_delay = self.max_delay, backoff=self.backoff)
         data = res.json()
         if 'error' in data and data['error']:
             raise FofaError(data['errmsg'])
@@ -219,10 +284,7 @@ class Client:
 
 
 if __name__ == "__main__":
-    env_dist = os.environ
-    FOFA_EMAIL = env_dist.get('FOFA_EMAIL')
-    FOFA_KEY = env_dist.get('FOFA_KEY')
-    client = Client(FOFA_EMAIL, FOFA_KEY)
+    client = Client()
     print(json.dumps(client.get_userinfo(), ensure_ascii=False))
     print(json.dumps(client.search('app="网宿科技-公司产品"', page=1), ensure_ascii=False))
     print(json.dumps(client.search_host('78.48.50.249', detail=True), ensure_ascii=False))
