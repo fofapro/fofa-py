@@ -142,7 +142,7 @@ def fofa_paged_search_save(writer, client, query, fields, num):
         'consumed_fpoint': 0,
     }
     total = 0
-    progress_bar = tqdm(total=num, desc='Downloading Fofa Data', leave=False, unit='item', unit_scale=True)
+    progress_bar = tqdm(total=num, desc='Downloading Fofa Data', leave=True, unit='item', unit_scale=True)
     try:
         while True:
             remain_num = num - total
@@ -192,7 +192,7 @@ def fofa_next_search_save(writer, client, query, fields, num):
     }
     total = 0
     next = ''
-    progress_bar = tqdm(total=num, desc='Downloading Fofa Data', leave=False, unit='item', unit_scale=True)
+    progress_bar = tqdm(total=num, desc='Downloading Fofa Data', leave=True, unit='item', unit_scale=True)
     try:
         while True:
             remain_num = num - total

@@ -50,7 +50,8 @@ fofa search domain=bing.com -f port,domain,protocol,title --stats --size 10
 保存结果数据为csv或xls格式，示例:
 
 ```shell
-fofa search domain=bing.com -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing.xls
+# 保存数据为csv文件
+fofa search domain=bing.com -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing.csv
 
 # 搜索证书匹配的数据
 fofa search 'domain="bing.com" && cert.is_match=true' -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing_cert_expired.xls

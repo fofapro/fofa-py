@@ -1,6 +1,6 @@
 # FOFA Pro SDK Documentation
 
-An easy-to-use wrapper for <a href="https://fofa.info/api"><font face="menlo">FOFA Pro API</font></a> written in python. Currently support both `Python 2.7` & `Python 3.7+`
+An easy-to-use wrapper for <a href="https://fofa.info/api"><font face="menlo">FOFA Pro API</font></a> written in python. Currently support `Python 3.7+`
 
 FOFA is a search engine for Internet-connected devices. `FOFA PRO API` helps developers integrate FOFA Pro data easily in their own projects.
 
