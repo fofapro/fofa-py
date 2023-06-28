@@ -35,9 +35,9 @@ fofa
 fofa search domain=bing.com --size 1000 -f ip,port,domain,title,certs_match,certs_expired
 ```
 
-#### 统计查询数量
+#### 统计搜索结果数量
 ```shell
-fofa search --count domain=bing.com
+fofa search domain=bing.com --count
 382128
 ```
 
@@ -50,10 +50,10 @@ fofa search domain=bing.com -f port,domain,protocol,title --stats --size 10
 保存结果数据为csv或xls格式，示例:
 
 ```shell
-fofa search domain=bing.com --size 1000 -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing.xls
+fofa search domain=bing.com -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing.xls
 
 # 搜索证书匹配的数据
-fofa search 'domain="bing.com" && cert.is_match=true' --size 1000 -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing_cert_expired.xls
+fofa search 'domain="bing.com" && cert.is_match=true' -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing_cert_expired.xls
 ```
 
 ### host

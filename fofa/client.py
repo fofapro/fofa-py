@@ -286,7 +286,8 @@ class Client:
             params = None
 
         def make_request():
-            response = self._session.request(url=u, method=method, data=data, params=req_param)
+            headers = {"Accept-Encoding": "gzip"}
+            response = self._session.request(url=u, method=method, data=data, params=req_param, headers=headers)
             if response.status_code != 200:
                 raise Exception("Request failed with status code: {}".format(response.status_code))
             return response
