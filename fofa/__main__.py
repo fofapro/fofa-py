@@ -359,7 +359,7 @@ def search(count, stats, save, color, fields, size, verbose, query):
             logging.error("row mismatch: %s", row)
         datas.append(row)
 
-    table = tabulate(datas, headers=flds)
+    table = tabulate(datas, headers=flds, tablefmt="simple", colalign=("left",))
     click.echo(table)
 
 if __name__ == "__main__":
