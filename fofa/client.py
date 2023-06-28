@@ -20,7 +20,7 @@ else:
     from .helper import get_language, encode_query
 
 class Client:
-    def __init__(self, email='', key='', base_url='https://fofa.info', proxies=None):
+    def __init__(self, email='', key='', base_url='', proxies=None):
         """ create new fofa client
 
         :param email: The Fofa Email. If not specified, it will be read from the FOFA_EMAIL environment variable.
@@ -35,6 +35,9 @@ class Client:
         if email == '':
             email = os.environ.get('FOFA_EMAIL', '')
             key = os.environ.get('FOFA_KEY', '')
+
+        if base_url == '':
+            base_url = os.environ.get('FOFA_BASE_URL', 'https://fofa.info')
 
         self.email = email
         self.key = key
@@ -112,8 +115,18 @@ class Client:
         param['page'] = page
         param['fields'] = fields
         param['size'] = size
-        logging.info("search '%s' page:%d size:%d", query_str, page, size)
+        logging.debug("search '%s' page:%d size:%d", query_str, page, size)
         return self.__do_req('/api/v1/search/all', param)
+
+    def can_use_next(self):
+        """
+        """
+        try:
+            self.search_next('bad=query', size=1)
+        except FofaError as e:
+            if e.code == 820000:
+                return True
+            return False
 
     def search_next(self, query_str, fields='', size=100, next='', full=False, opts={}):
         """
@@ -156,7 +169,7 @@ class Client:
         if next and next != '':
             param['next'] = next
 
-        logging.info("search next for '%s' size:%d, next:%s", query_str, size, next)
+        logging.debug("search next for '%s' size:%d, next:%s", query_str, size, next)
         return self.__do_req('/api/v1/search/next', param)
 
     def search_stats(self, query_str, size=5, fields='', opts={}):
@@ -271,12 +284,17 @@ class Client:
         if method == 'post':
             data = params
             params = None
-        res = retry_call(self._session.request, fkwargs = {
-            "url": u,
-            "method": method,
-            "data": data,
-            "params": req_param,
-        }, tries = self.tries, delay = self.delay, max_delay = self.max_delay, backoff=self.backoff)
+
+        def make_request():
+            response = self._session.request(url=u, method=method, data=data, params=req_param)
+            if response.status_code != 200:
+                raise Exception("Request failed with status code: {}".format(response.status_code))
+            return response
+        res = retry_call(make_request,
+                         tries = self.tries,
+                         delay = self.delay,
+                         max_delay = self.max_delay,
+                         backoff=self.backoff)
         data = res.json()
         if 'error' in data and data['error']:
             raise FofaError(data['errmsg'])
@@ -285,6 +303,8 @@ class Client:
 
 if __name__ == "__main__":
     client = Client()
+    logging.basicConfig(level=logging.DEBUG)
+    print(client.can_use_next())
     print(json.dumps(client.get_userinfo(), ensure_ascii=False))
     print(json.dumps(client.search('app="网宿科技-公司产品"', page=1), ensure_ascii=False))
     print(json.dumps(client.search_host('78.48.50.249', detail=True), ensure_ascii=False))

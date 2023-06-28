@@ -26,18 +26,34 @@ fofa
 | `FOFA_KEY`   | 前往 [个人中心](https://fofa.info/userInfo) 查看 `API Key` |
 
 
-### count
-统计查询的数量， 示例
+### search
+搜索子命令，从fofa搜索数据，
+
+#### 搜索数据
+搜索数据并展示结果
 ```shell
-fofa count domain=bing.com
+fofa search domain=bing.com --size 1000 -f ip,port,domain,title,certs_match,certs_expired
+```
+
+#### 统计查询数量
+```shell
+fofa search --count domain=bing.com
 382128
 ```
 
-### download
-从Fofa搜索，并下载数据为csv或json格式，示例:
+#### 查询聚合信息
+```shell
+fofa search domain=bing.com -f port,domain,protocol,title --stats --size 10
+```
+
+#### 保存结果数据
+保存结果数据为csv或xls格式，示例:
 
 ```shell
-fofa download 'domain=bing.com'
+fofa search domain=bing.com --size 1000 -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing.xls
+
+# 搜索证书匹配的数据
+fofa search 'domain="bing.com" && cert.is_match=true' --size 1000 -f ip,port,domain,link,title,certs_match,certs_expired --size 50000 --save bing_cert_expired.xls
 ```
 
 ### host
@@ -78,21 +94,6 @@ fofa host www.bing.com
     "update_time": "2023-06-27 08:00:00"
 }
 ```
-
-### search
-从Fofa搜索数据，并在命令行展示结果，可以使用--fields指定要输出的字段，示例
-
-```shell
-fofa search --fields ip,port,protocol,link,certs_expired,certs_match 'domain="bing.com" && cert.is_expired=true'
-```
-
-### stats
-从Fofa获取搜索语句的聚合数据，并在命令行展示聚合结果，可以使用--fields指定要聚合的字段，示例
-
-```shell
-fofa stats --fields asn,port,country 'domain="bing.com" && cert.is_expired=true'
-```
-
 
 ### 代码使用sdk
 
