@@ -3,3 +3,4 @@ requests>=2.2.1
 retry
 XlsxWriter
 tqdm
+tabulate

@@ -254,6 +254,8 @@ def fofa_download(client, query, fields, num, save_file, filetype='xls'):
         else:
             raise click.ClickException('No result')
 
+from tabulate import tabulate
+
 @main.command()
 @click.option('--count', '-c', default=False, flag_value=True, help='Count the number of results.')
 @click.option('--stats', default=False, flag_value=True, help='Query statistics information.')
@@ -331,28 +333,19 @@ def search(count, stats, save, color, fields, size, verbose, query):
         raise click.ClickException('No result')
 
     flds = fields.split(',')
-    out = u''
 
     # stats line
-    stats = "#stat query:'{}' total:{:,} size:{:,} consumed fpoints:{:,}\n".format(
+    stats = "#stat query:'{}' total:{:,} size:{:,} consumed fpoints:{:,}".format(
         r['query'],
         r['size'],
         len(r['results']),
         r['consumed_fpoint']
     )
-    out += stats
+    click.echo(stats)
 
-    separator = u'\t'
-
-    # header line
-    header = u'#fields '
-    for f in flds:
-        header += f
-        header += separator
-    out += header + u'\n'
-
+    datas = []
     for line in r['results']:
-        row = u''
+        row = []
 
         for index, field in enumerate(flds):
             tmp = u''
@@ -361,14 +354,13 @@ def search(count, stats, save, color, fields, size, verbose, query):
                 tmp = escape_data(value)
                 if color:
                     tmp = click.style(tmp, fg=COLORIZE_FIELDS.get(field, 'white'))
+            row.append(tmp)
+        if len(row) != len(flds):
+            logging.error("row mismatch: %s", row)
+        datas.append(row)
 
-                row += tmp
-            row += separator
-        out += row + u'\n'
-    click.echo_via_pager(out)
-
-
-
+    table = tabulate(datas, headers=flds)
+    click.echo(table)
 
 if __name__ == "__main__":
     main()
