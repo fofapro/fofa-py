@@ -8,7 +8,7 @@ README = open('./docs/README_CN.md', 'r').read()
 
 setup(
     name = 'FOFA-py',
-    version = '2.0.2',
+    version = '2.0.3',
     description = 'Python library for FOFA (https://fofa.info)',
     long_description=README,
     long_description_content_type="text/markdown",

@@ -151,8 +151,12 @@ def fofa_paged_search_save(writer, client, query, fields, num):
                 progress_bar.update(1)
                 writer.write_data(d1)
 
+            if num > r['size']:
+                progress_bar.total = r['size']
+
             progress_bar.refresh()
-            result['size'] += r['size']
+
+            result['size'] = r['size']
             result['consumed_fpoint'] += r['consumed_fpoint']
             result['query'] = r['query']
             result['writed'] = total
@@ -203,10 +207,13 @@ def fofa_next_search_save(writer, client, query, fields, num):
                 progress_bar.update(1)
                 writer.write_data(d1)
 
+            if num > r['size']:
+                progress_bar.total = r['size']
+
             progress_bar.refresh()
 
             next = r['next']
-            result['size'] += r['size']
+            result['size'] = r['size']
             result['consumed_fpoint'] += r['consumed_fpoint']
             result['query'] = r['query']
             result['writed'] = total
