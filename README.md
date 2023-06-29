@@ -7,6 +7,7 @@ FOFA is a search engine for Internet-connected devices. `FOFA API` helps develop
 ## Documentaion
 - <a href="./docs/README_EN.md"> Documentation </a>
 - <a href="./docs/README_CN.md"> 中文文档 </a>
+- [Api Documentation](https://fofapro.github.io/fofa-py/index.html)
 
 ## Usage   
 ``` python
