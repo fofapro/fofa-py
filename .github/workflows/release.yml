@@ -6,7 +6,8 @@ on:
       - "*"  # 仅在创建标签时触发
 
 jobs:
-  build:
+  deployment:
+    environment: publish
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
