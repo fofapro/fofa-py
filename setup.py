@@ -19,7 +19,6 @@ setup(
     entry_points={'console_scripts': ['fofa=fofa.__main__:main']},
     install_requires=DEPENDENCIES,
     license = "MIT",
-    requires_python=">=3.7",
     keywords=['fofa', 'security', 'network'],
     classifiers = [
         'Intended Audience :: Developers',

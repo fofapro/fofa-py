@@ -30,8 +30,8 @@ def main():
 
 def get_user_key():
     return {
-        'email': os.environ['FOFA_EMAIL'],
-        'key': os.environ['FOFA_KEY'],
+        'email': os.environ.get('FOFA_EMAIL', ''),
+        'key': os.environ.get('FOFA_KEY', ''),
     }
 
 def print_data(data):
@@ -65,28 +65,22 @@ def host(detail, host):
     print_data(r)
 
 
-def fofa_count(query):
+def fofa_count(client, query):
     """Returns the number of results for a fofa query.
     """
-    para = get_user_key()
-    api = fofa.Client(**para)
-
     try:
-        r = api.search(query, size=1, fields='ip')
+        r = client.search(query, size=1, fields='ip')
     except fofa.FofaError as e:
         raise click.ClickException(e.message)
 
     click.echo(r['size'])
 
 
-def fofa_stats(query, fields='ip,port,protocol', size=5):
+def fofa_stats(client, query, fields='ip,port,protocol', size=5):
     """Returns the number of results for a fofa query.
     """
-    para = get_user_key()
-    api = fofa.Client(**para)
-
     try:
-        r = api.search_stats(query, size=size, fields=fields)
+        r = client.search_stats(query, size=size, fields=fields)
     except fofa.FofaError as e:
         raise click.ClickException(e.message)
 
@@ -170,6 +164,8 @@ def fofa_paged_search_save(writer, client, query, fields, num):
         progress_bar.set_postfix({'completed': True})
     except fofa.FofaError as e:
         raise click.ClickException(u'search page {}, error: {}'.format(page, e.message))
+    except Exception as e:
+        raise click.ClickException(u'search page {}, error: {}'.format(next, e))
 
     return result
 
@@ -222,6 +218,8 @@ def fofa_next_search_save(writer, client, query, fields, num):
         progress_bar.set_postfix({'completed': True})
     except fofa.FofaError as e:
         raise click.ClickException(u'search next {}, error: {}'.format(next, e.message))
+    except Exception as e:
+        raise click.ClickException(u'search next {}, error: {}'.format(next, e))
 
     return result
 
@@ -260,12 +258,13 @@ from tabulate import tabulate
 @click.option('--count', '-c', default=False, flag_value=True, help='Count the number of results.')
 @click.option('--stats', default=False, flag_value=True, help='Query statistics information.')
 @click.option('--save', metavar='<filename>', help='Save the results to a file, supports csv and xls formats.')
-@click.option('--color/--no-color', default=True, help='Enable/disable colorized output.')
+@click.option('--color/--no-color', default=True, help='Enable/disable colorized output. Default: True')
 @click.option('--fields', '-f', help='List of properties to show in the search results.', default='ip,port,protocol,domain')
-@click.option('--size', help='The number of search results that should be returned. Maximum: 10000', default=100, type=int)
+@click.option('--size', help='The number of search results that should be returned. Default: 100', default=100, type=int)
 @click.option('-v', '--verbose', count=True, help='Increase verbosity level. Use -v for INFO level, -vv for DEBUG level.')
-@click.argument('query', metavar='<fofa query>', nargs=-1)
-def search(count, stats, save, color, fields, size, verbose, query):
+@click.option('--retry', help='The number of times to retry the HTTP request in case of failure. Default: 10', default=10, type=int)
+@click.argument('query', metavar='<fofa query>')
+def search(count, stats, save, color, fields, size, verbose, retry, query):
     """ Returns the results for a fofa query.
 
     If the query contains special characters like && or ||, please enclose it in single quotes ('').
@@ -273,21 +272,25 @@ def search(count, stats, save, color, fields, size, verbose, query):
     Example:
 
     # Show results in the console
+
     fofa search 'title="fofa" && cert.is_match=true'
 
     # Count the number of results
+
     fofa search --count 'title="fofa" && cert.is_match=true'
 
     # Query statistics information
+
     fofa search --stats 'title="fofa" && cert.is_match=true'
 
     # Save the results to a csv file
+
     fofa search --save results.csv 'title="fofa" && cert.is_match=true'
 
     # Save the results to an Excel file
+
     fofa search --save results.xlsx 'title="fofa" && cert.is_match=true'
     """
-    query = ' '.join(query).strip()
     if query == '':
         raise click.ClickException('Empty fofa query')
 
@@ -301,18 +304,19 @@ def search(count, stats, save, color, fields, size, verbose, query):
         default_log_level = logging.DEBUG
     logging.basicConfig(level=default_log_level)
 
+    para = get_user_key()
+    api = fofa.Client(**para)
+    api.tries = retry
+
     # count mode
     if count:
-        fofa_count(query)
+        fofa_count(api, query)
         return
 
     # stat mode
     if stats:
-        fofa_stats(query, fields, size)
+        fofa_stats(api, query, fields, size)
         return
-
-    para = get_user_key()
-    api = fofa.Client(**para)
 
     # download mode
     if save:
