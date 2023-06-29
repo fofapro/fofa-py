@@ -120,4 +120,4 @@ if __name__ == "__main__":
 
 
 ## 协议
-`FOFA SDK` 遵循 `MIT` 协议 <a href="https://opensource.org/licenses/mit"><font face="menlo">https://opensource.org/licenses/mit
+`FOFA SDK` 遵循 `MIT` 协议，查看 [协议文件](https://opensource.org/licenses/mit)
