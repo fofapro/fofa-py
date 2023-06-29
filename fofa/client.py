@@ -269,6 +269,13 @@ class Client:
         u = self.base_url + path
         data = None
         req_param = {}
+
+        if not self.email or self.email == '':
+            raise FofaError("Empty fofa email")
+
+        if not self.key or self.key == '':
+            raise FofaError("Empty fofa api key")
+
         if params == None:
             req_param = {
                 "email": self.email,
