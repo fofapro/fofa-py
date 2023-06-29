@@ -8,7 +8,7 @@
 
 ## 安装
 ```shell
-pip install fofa
+pip install fofa-py
 ```
 
 ## 用法

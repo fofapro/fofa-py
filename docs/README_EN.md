@@ -8,7 +8,7 @@ FOFA Command-line Tool is a simple command-line tool implemented based on FOFA P
 
 ## Installation
 ```shell
-pip install fofa
+pip install fofa-py
 ```
 
 ## Usage
