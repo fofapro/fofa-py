@@ -20,17 +20,22 @@ else:
     from .helper import get_language, encode_query
 
 class Client:
-    def __init__(self, email='', key='', base_url='', proxies=None):
-        """ create new fofa client
+    """
+    A class representing the FOFA client.
 
-        :param email: The Fofa Email. If not specified, it will be read from the FOFA_EMAIL environment variable.
-        :type email: str
-        :param key: The Fofa api key. If not specified, it will be read from the FOFA_KEY environment variable.
-        :type key: str
-        :param base_url: The base URL of the FOFA API. Defaults to 'https://fofa.info'.
-        :type base_url: str
-        :param proxies:  A proxies array for the requests library, e.g. {'https': 'your proxy'}
-        :type proxies: dict
+    :param email: The Fofa Email. If not specified, it will be read from the FOFA_EMAIL environment variable.
+    :type email: str
+    :param key: The Fofa api key. If not specified, it will be read from the FOFA_KEY environment variable.
+    :type key: str
+    :param base_url: The base URL of the FOFA API. Defaults to 'https://fofa.info'.
+    :type base_url: str
+    :param proxies:  A proxies array for the requests library, e.g. {'https': 'your proxy'}
+    :type proxies: dict
+
+    """
+
+    def __init__(self, email='', key='', base_url='', proxies=None):
+        """ Initialize the FOFA client.
         """
         if email == '':
             email = os.environ.get('FOFA_EMAIL', '')
@@ -62,8 +67,18 @@ class Client:
 
     def get_userinfo(self):
         """
-        get user info for current user
-        :return: query result in json format
+        Get user info for current user.
+    
+        :return: User information in JSON format.
+        :rtype: dict
+        :raises FofaException: If an error occurs during the API request.
+       
+        :Example:
+        
+        The returned JSON result will be in the following format:
+        
+        .. code-block:: json
+        
             {
                 "username": "sample",
                 "fofacli_ver": "4.0.3",
@@ -77,19 +92,38 @@ class Client:
                 "isvip": false,
                 "email": "username@sample.net"
             }
-        """
+
+         """
         return self.__do_req( "/api/v1/info/my")
 
     def search(self, query_str, page=1, size=100, fields="", opts={}):
         """
-        :param query_str: search string
-            example: 'ip=127.0.0.1'
-            example: 'header="thinkphp" || header="think_template"'
-        :param page: starting page number
-        :param size: number of result fit in one page
-        :param fields: query field
-            example: 'ip,city'
-        :return: query result in json format
+        Search data in FOFA.
+
+        :param query_str: The search query string.
+
+            Example 1:
+                'ip=127.0.0.1'
+    
+            Example 2:
+                'header="thinkphp" || header="think_template"'
+
+        :type query_str: str
+        :param page: Page number. Default is 1.
+        :type page: int
+        :param size: Number of results to be returned in one page. Default is 100.
+        :type size: int
+        :param fields: Comma-separated list of fields to be included in the query result.
+            Example:
+            'ip,city'
+        :type fields: str
+        :param opts: Additional options for the query. This should be a dictionary of key-value pairs.
+        :type opts: dict
+        :return: Query result in JSON format.
+        :rtype: dict
+        
+        .. code-block:: json
+        
             {
                 "results": [
                     [
@@ -105,10 +139,11 @@ class Client:
                 ],
                 "mode": "extended",
                 "error": false,
-                "query": "app=\"网宿科技-公司产品\"",
+                "query": "app=\\"网宿科技-公司产品\\"",
                 "page": 1,
                 "size": 2
             }
+
         """
         param = opts
         param['qbase64'] = encode_query(query_str)
@@ -120,6 +155,10 @@ class Client:
 
     def can_use_next(self):
         """
+        Check if the "search_next" API can be used.
+
+        :return: True if the "search_next" API can be used, False otherwise.
+        :rtype: bool
         """
         try:
             self.search_next('bad=query', size=1)
@@ -132,9 +171,13 @@ class Client:
         """
         Query the next page of search results.
 
-        :param query_str: search string
-            example: 'ip=127.0.0.1'
-            example: 'header="thinkphp" || header="think_template"'
+        :param query_str: The search query string.
+
+            Example 1:
+                'ip=127.0.0.1'
+    
+            Example 2:
+                'header="thinkphp" || header="think_template"'
 
         :param fields: The fields to be included in the response.
             Default: 'host,ip,port'
@@ -177,8 +220,13 @@ class Client:
         Query the statistics of the search results.
 
         :param query_str: The search query string.
-            Example: 'ip=127.0.0.1'
-            Example: 'header="thinkphp" || header="think_template"'
+
+            Example 1:
+                'ip=127.0.0.1'
+    
+            Example 2:
+                'header="thinkphp" || header="think_template"'
+
         :type query_str: str
 
         :param size: The number of results to be aggregated for each item.
@@ -193,6 +241,10 @@ class Client:
         :type opts: dict
 
         :return: query result in json format
+
+
+        .. code-block:: json
+
             {
                 "distinct": {
                     "ip": 1717,
@@ -222,6 +274,7 @@ class Client:
                 },
                 "error": false
             }
+
         """
         param = opts
         param['qbase64'] = encode_query(query_str)
@@ -231,9 +284,19 @@ class Client:
 
     def search_host(self, host, detail=False, opts={}):
         """
-        :param host: required ip
-        :param detail: show detail info
-        :return: query result in json format
+        Search for host information based on the specified IP address or domain.
+
+        :param host: The IP address or domain of the host to search for.
+        :type host: str
+        :param detail: Optional. Specifies whether to show detailed information. Default is False.
+        :type detail: bool
+        :param opts: Optional. Additional options for the search. Default is an empty dictionary.
+        :type opts: dict
+        :return: The query result in JSON format.
+        :rtype: dict
+
+        .. code-block:: json
+
            {
                 "error": false,
                 "host": "78.48.50.249",
@@ -258,6 +321,7 @@ class Client:
                 ],
                 "update_time": "2022-06-11 08:00:00"
             }
+
         """
         param = opts
         param['detail'] = detail
@@ -307,7 +371,6 @@ class Client:
         if 'error' in data and data['error']:
             raise FofaError(data['errmsg'])
         return data
-
 
 if __name__ == "__main__":
     client = Client()
