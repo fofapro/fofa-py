@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sphinx-build -b html ./ api_docs
+sphinx-build -b html ./ docs
