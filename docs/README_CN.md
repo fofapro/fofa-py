@@ -24,7 +24,6 @@ fofa
 
 | 环境变量Key  | Value                                                      |
 |--------------|:----------------------------------------------------------:|
-| `FOFA_EMAIL` | 用户登陆 `FOFA` 使用的 `Email`                             |
 | `FOFA_KEY`   | 前往 [个人中心](https://fofa.info/userInfo) 查看 `API Key` |
 
 
@@ -105,8 +104,8 @@ fofa host www.bing.com
 import fofa
 
 if __name__ == "__main__":
-    email, key = ('test@test.com', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')  # 输入email和key
-    client = fofa.Client(email, key)                # 将email和key传入fofa.Client类进行初始化和验证，并得到一个fofa client对象
+    key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'  # 输入key
+    client = fofa.Client(key)                # 将key传入fofa.Client类进行初始化和验证，并得到一个fofa client对象
     query_str = 'header="thinkphp" || header="think_template"'
     for page in range(1, 51):                       # 从第1页查到第50页
         fpoint = client.get_userinfo()["fofa_point"]      # 查询F点剩余数量

@@ -2,17 +2,16 @@
 import unittest
 import fofa
 import sys, os
+import tracemalloc
 
 
 class ClientTestCase(unittest.TestCase):
     def setUp(self):
         env_dist = os.environ
-        email = env_dist.get('FOFA_EMAIL')
         key = env_dist.get('FOFA_KEY')
-        if not email and not key:
-            config = open('../CONFIG').read()
-            email, key = config.split("\n")
-        self.client = fofa.Client(email, key)
+        if not key:
+            key = open('../CONFIG').read()
+        self.client = fofa.Client(key)
 
     def test_get_userinfo(self):
         userinfo = self.client.get_userinfo()

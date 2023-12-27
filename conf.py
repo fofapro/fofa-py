@@ -9,7 +9,7 @@
 project = 'FOFA'
 copyright = '2023 Fofa, Inc'
 author = 'fofabot@baimaohui.net'
-release = '2.0.0'
+release = '2.0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

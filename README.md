@@ -15,8 +15,8 @@ FOFA is a search engine for Internet-connected devices. `FOFA API` helps develop
 import fofa
 
 if __name__ == "__main__":
-    email, key = ('test@test.com', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')  
-    client = fofa.Client(email, key)               
+    key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    client = fofa.Client(key)               
     query_str = 'header="thinkphp" || header="think_template"'                           
     data = client.search(query_str, size=100, page=1, fields="ip,city") 
     for ip, city in data["results"]:

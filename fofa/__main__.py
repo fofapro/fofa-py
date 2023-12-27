@@ -30,7 +30,6 @@ def main():
 
 def get_user_key():
     return {
-        'email': os.environ.get('FOFA_EMAIL', ''),
         'key': os.environ.get('FOFA_KEY', ''),
     }
 
