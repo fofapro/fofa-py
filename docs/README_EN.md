@@ -23,7 +23,6 @@ Set authentication information using environment variables
 
 | Environment Variable Key | Value                                                       |
 |--------------------------|:-----------------------------------------------------------:|
-| `FOFA_EMAIL`             | Email used for logging in to FOFA                           |
 | `FOFA_KEY`               | API Key obtained from [Personal Center](https://fofa.info/userInfo) |
 
 ### search
@@ -103,12 +102,11 @@ fofa host www.bing.com
 import fofa
 
 if __name__ == "__main__":
-    email, key = ('test@test.com', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')  # Input email and key
-    client = fofa.Client(email, key)                # Initialize and authenticate with fofa.Client using email and key, and get a fofa client object
+    key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'  # Input fofa key
+    client = fofa.Client(key)                # Initialize and authenticate with fofa.Client using key, and get a fofa client object
     query_str = 'header="thinkphp" || header="think_template"'
     for page in range(1, 51):                       # Query from page 
-
-1 to page 50
+        ## 1 to page 50
         fpoint = client.get_userinfo()["fofa_point"]      # Check the remaining number of F points
         if fpoint < 100:
             break                                   # Stop getting data when F points are less than 100

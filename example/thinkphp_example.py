@@ -2,8 +2,8 @@
 import fofa
 
 if __name__ == "__main__":
-    email, key = ('test@test.com', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')  # 输入email和key
-    client = fofa.Client(email, key)                # 将email和key传入fofa.Client类进行初始化和验证，并得到一个fofa client对象
+    key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' # 输入key
+    client = fofa.Client(key)                # 将key传入fofa.Client类进行初始化和验证，并得到一个fofa client对象
     query_str = 'header="thinkphp" || header="think_template"'
     for page in range(1, 51):                       # 从第1页查到第50页
         fcoin = client.get_userinfo()["fcoin"]      # 查询F币剩余数量

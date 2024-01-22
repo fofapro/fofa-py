@@ -23,8 +23,6 @@ class Client:
     """
     A class representing the FOFA client.
 
-    :param email: The Fofa Email. If not specified, it will be read from the FOFA_EMAIL environment variable.
-    :type email: str
     :param key: The Fofa api key. If not specified, it will be read from the FOFA_KEY environment variable.
     :type key: str
     :param base_url: The base URL of the FOFA API. Defaults to 'https://fofa.info'.
@@ -34,17 +32,15 @@ class Client:
 
     """
 
-    def __init__(self, email='', key='', base_url='', proxies=None):
+    def __init__(self, key='', base_url='', proxies=None):
         """ Initialize the FOFA client.
         """
-        if email == '':
-            email = os.environ.get('FOFA_EMAIL', '')
+        if key == '':
             key = os.environ.get('FOFA_KEY', '')
 
         if base_url == '':
             base_url = os.environ.get('FOFA_BASE_URL', 'https://fofa.info')
 
-        self.email = email
         self.key = key
 
         self.base_url = base_url.rstrip('/')
@@ -334,21 +330,16 @@ class Client:
         data = None
         req_param = {}
 
-        if not self.email or self.email == '':
-            raise FofaError("Empty fofa email")
-
         if not self.key or self.key == '':
             raise FofaError("Empty fofa api key")
 
         if params == None:
             req_param = {
-                "email": self.email,
                 "key": self.key,
                 "lang": self.lang,
             }
         else:
             req_param = params
-            req_param['email'] = self.email
             req_param['key'] = self.key
             req_param['lang'] = self.lang
 
