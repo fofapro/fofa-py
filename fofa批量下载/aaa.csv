@@ -1,0 +1,4 @@
+product
+app="Elasticsearch"&&country="CN"
+app="redis"&&country="CN"
+app="MongoDB-数据库"&&country="CN"
